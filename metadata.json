@@ -1,0 +1,6 @@
+{
+  "name": "Mayday Tarot Music Player",
+  "description": "An interactive, camera gesture-controlled Mayday album tarot music player and AI fortune-telling reader powered by Gemini.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
