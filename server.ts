@@ -63,7 +63,6 @@ async function neteaseGetLyric(songId: number): Promise<string | null> {
   } catch (e) { console.error('Netease lyric error:', e); return null; }
 }
 
-const DEEPSEEK_KEY = process.env.DEEPSEEK_API_KEY || '';
 const GLM_KEY = process.env.GLM_API_KEY || '';
 // Read cookie from .netease_cookie file (not .env to avoid Vite HMR reload)
 let savedCookie = '';
@@ -100,28 +99,6 @@ async function tryGLM(systemPrompt: string, userPrompt: string): Promise<any | n
     let content = data.choices?.[0]?.message?.content || '';
     content = content.replace(/```json\s*/g, '').replace(/```\s*/g, '').trim();
     return JSON.parse(content);
-  } catch {
-    return null;
-  }
-}
-
-// DeepSeek API (OpenAI-compatible)
-async function tryDeepSeek(systemPrompt: string, userPrompt: string): Promise<any | null> {
-  if (!DEEPSEEK_KEY) return null;
-  try {
-    const resp = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${DEEPSEEK_KEY}` },
-      body: JSON.stringify({
-        model: 'deepseek-v4-flash',
-        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
-        temperature: 0.9, max_tokens: 800,
-        response_format: { type: 'json_object' },
-      }),
-    });
-    if (!resp.ok) { const errText = await resp.text(); throw new Error(`DeepSeek ${resp.status}: ${errText.slice(0, 200)}`); }
-    const data = await resp.json();
-    return JSON.parse(data.choices?.[0]?.message?.content || '');
   } catch {
     return null;
   }
@@ -318,11 +295,8 @@ ${songsCtx}
   "divineInsight": "一句五月天歌词"
 }`;
 
-    // Priority: GLM-4-Flash (free) → DeepSeek → mock
-    let result = await tryGLM(systemPrompt, userPrompt);
-    if (result) { res.json(result); return; }
-
-    result = await tryDeepSeek(systemPrompt, userPrompt);
+    // GLM-4-Flash → mock fallback
+    const result = await tryGLM(systemPrompt, userPrompt);
     if (result) { res.json(result); return; }
 
     // Mock fallback
@@ -332,7 +306,7 @@ ${songsCtx}
     ];
     const randomAns = mockAnswers[Math.floor(Math.random() * mockAnswers.length)];
     return res.json({
-      answer: randomAns + "\n\n(配置 GLM_API_KEY 或 DEEPSEEK_API_KEY 后将解锁阿信亲自回复。)",
+      answer: randomAns + "\n\n(配置 GLM_API_KEY 后将解锁阿信亲自回复。)",
       recommendedSongs: album.songs.slice(0, 2).map(s => s.title),
       divineInsight: '我和我最后的倔强，握紧双手绝对不放！'
     });
@@ -372,9 +346,7 @@ async function setupServer() {
 
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`五月天 · 命运唱片行 on port ${PORT}`);
-    console.log(GLM_KEY ? 'GLM-4-Flash AI: ready (free)' : 'GLM API: not configured (get free key at open.bigmodel.cn)');
-    console.log(DEEPSEEK_KEY ? 'DeepSeek AI: ready' : 'DeepSeek API: not configured');
-    console.log('Priority: GLM-4-Flash (free) → DeepSeek → mock');
+    console.log(GLM_KEY ? 'GLM-4-Flash AI: ready' : 'GLM API: not configured (get free key at open.bigmodel.cn)');
   });
 }
 
