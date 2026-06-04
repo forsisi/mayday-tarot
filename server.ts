@@ -12,6 +12,9 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
 
 app.use(express.json());
 
+// Health check for Railway
+app.get('/health', (_req, res) => { res.status(200).send('OK'); });
+
 const GLM_KEY = process.env.GLM_API_KEY || '';
 const { search, song_url_v1, lyric, login_qr_key, login_qr_create, login_qr_check, login_cellphone, login_status } = NeteaseCloudMusicApi as any;
 
