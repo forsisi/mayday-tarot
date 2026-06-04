@@ -40,15 +40,22 @@ export default function App() {
   const [showLogin, setShowLogin] = useState(false);
   const [neteaseLoggedIn, setNeteaseLoggedIn] = useState(false);
   const [neteaseNickname, setNeteaseNickname] = useState('');
+  const [neteaseCookie, setNeteaseCookie] = useState('');
   const [loginPhone, setLoginPhone] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [loginMsg, setLoginMsg] = useState('');
 
-  // Check login status on mount
+  // Load saved cookie from localStorage on mount
   useEffect(() => {
-    fetch('/api/music/status').then(r => r.json()).then(d => {
-      if (d.loggedIn) { setNeteaseLoggedIn(true); setNeteaseNickname(d.nickname || ''); }
-    }).catch(() => {});
+    const saved = localStorage.getItem('netease_cookie');
+    const nick = localStorage.getItem('netease_nickname');
+    if (saved) {
+      setNeteaseCookie(saved);
+      fetch(`/api/music/status?cookie=${encodeURIComponent(saved)}`).then(r => r.json()).then(d => {
+        if (d.loggedIn) { setNeteaseLoggedIn(true); setNeteaseNickname(nick || d.nickname || ''); }
+        else { localStorage.removeItem('netease_cookie'); localStorage.removeItem('netease_nickname'); }
+      }).catch(() => {});
+    }
   }, []);
 
   // Gesture speed setting
@@ -336,7 +343,10 @@ export default function App() {
         const data = await res.json();
         if (data.code === 800) { setLoginMsg('二维码已过期，重新生成...'); setQrPolling(false); setQrUrl(''); generateQR(); }
         else if (data.code === 802) setLoginMsg('扫码成功！请在手机上确认');
-        else if (data.loggedIn) {
+        else if (data.loggedIn && data.cookie) {
+          setNeteaseCookie(data.cookie);
+          localStorage.setItem('netease_cookie', data.cookie);
+          localStorage.setItem('netease_nickname', data.nickname || '');
           setNeteaseLoggedIn(true);
           setNeteaseNickname(data.nickname || '');
           setLoginMsg('登录成功！');
@@ -344,7 +354,6 @@ export default function App() {
           setShowLogin(false);
           setLoginMsg('');
           setQrUrl('');
-          // Immediately restart current song from beginning with full version
           if (isPlaying && activeSong) {
             maydaySynth.stop();
             playSong(activeSong, selectedAlbum.title);
@@ -364,7 +373,10 @@ export default function App() {
         body: JSON.stringify({ phone: loginPhone, password: loginPassword })
       });
       const data = await res.json();
-      if (data.success) {
+      if (data.success && data.cookie) {
+        setNeteaseCookie(data.cookie);
+        localStorage.setItem('netease_cookie', data.cookie);
+        localStorage.setItem('netease_nickname', data.nickname || '');
         setNeteaseLoggedIn(true);
         setNeteaseNickname(data.nickname || '');
         setLoginMsg('登录成功！');
@@ -670,6 +682,7 @@ export default function App() {
                           const params = new URLSearchParams();
                           params.set('title', activeSong.title);
                           params.set('album', selectedAlbum.title);
+                          if (neteaseCookie) params.set('cookie', neteaseCookie);
                           const res = await fetch(`/api/music/lyric?${params}`);
                           const data = await res.json();
                           if (data.lyric) setApiLyrics(data.lyric);
@@ -886,9 +899,10 @@ export default function App() {
                 密码登录
               </button>
               {neteaseLoggedIn && (
-                <button onClick={async () => {
-                  await fetch('/api/music/logout', { method: 'POST' });
-                  setNeteaseLoggedIn(false); setNeteaseNickname(''); setShowLogin(false);
+                <button onClick={() => {
+                  localStorage.removeItem('netease_cookie');
+                  localStorage.removeItem('netease_nickname');
+                  setNeteaseCookie(''); setNeteaseLoggedIn(false); setNeteaseNickname(''); setShowLogin(false);
                   setScreen('INTRO'); setIsPlaying(false); maydaySynth.stop();
                 }}
                   className="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-red-400 text-sm transition">

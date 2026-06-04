@@ -118,11 +118,6 @@ export class MaydaySynthPlayer {
     if (this.primaryGain) this.primaryGain.gain.value = muted ? 0.0 : 0.3;
   }
 
-  private audioUrl(songId: string): string {
-    const p = FLAC_PATH_MAP[songId];
-    return p ? `/${p}` : `/audio/${songId}.flac`;
-  }
-
   public async play(songId: string, songTitle?: string, albumTitle?: string, onNote?: (n: string) => void) {
     this.initCtx();
     if (this.ctx?.state === 'suspended') this.ctx.resume();
@@ -135,9 +130,11 @@ export class MaydaySynthPlayer {
     this.melodyIndex = 0;
     this.chordIndex = 0;
 
-    const localUrl = this.audioUrl(songId);
+    const p = FLAC_PATH_MAP[songId];
+    const localUrl = p ? `/${p}` : `/audio/${songId}.flac`;
     let bestUrl = localUrl;
     let settled = false;
+    const cookie = typeof localStorage !== 'undefined' ? localStorage.getItem('netease_cookie') || '' : '';
 
     const synth = (reason: string) => {
       if (settled) return;
@@ -157,12 +154,13 @@ export class MaydaySynthPlayer {
 
     const timer = setTimeout(() => synth('timeout'), 20000);
 
-    // Try Netease API first (with cookie for full song)
+    // Try Netease API with user's cookie
     if (songTitle) {
       try {
         const params = new URLSearchParams();
         params.set('title', songTitle);
         if (albumTitle) params.set('album', albumTitle);
+        if (cookie) params.set('cookie', cookie);
         const resp = await fetch(`/api/music/play?${params}`);
         const data = await resp.json();
         if (data.url) bestUrl = data.url;
@@ -171,19 +169,14 @@ export class MaydaySynthPlayer {
 
     if (settled) return;
 
-    // Play via Audio element
     const el = this.wireAudio();
     if (el) {
       let aDone = false;
       el.onerror = () => {
         if (aDone || settled) return;
         aDone = true;
-        if (bestUrl !== localUrl) {
-          // Netease failed, fallback to local
-          el.src = localUrl;
-        } else {
-          this.decodeViaFetch(localUrl, settled, flacOk, synth, timer);
-        }
+        if (bestUrl !== localUrl) { el.src = localUrl; }
+        else { this.decodeViaFetch(localUrl, settled, flacOk, synth, timer); }
       };
       el.oncanplay = () => {
         if (aDone || settled) return;
