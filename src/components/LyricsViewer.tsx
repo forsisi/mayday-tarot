@@ -81,7 +81,7 @@ export default function LyricsViewer({ lyrics, songTitle, isPlaying, currentTime
       <div
         ref={scrollRef}
         onScroll={handleUserScroll}
-        className="relative z-20 flex-1 overflow-y-auto px-6 py-4 space-y-3 scrollbar-thin"
+        className="relative z-20 flex-1 overflow-y-auto px-3 sm:px-6 py-2 sm:py-4 space-y-1.5 sm:space-y-3 scrollbar-thin"
         style={{
           scrollbarWidth: 'thin',
           scrollbarColor: 'rgba(245, 158, 11, 0.15) transparent',
@@ -101,7 +101,7 @@ export default function LyricsViewer({ lyrics, songTitle, isPlaying, currentTime
               key={index}
               data-line-index={index}
               data-time={line.time}
-              className={`relative transition-all duration-300 ease-out px-3 py-2.5 rounded-xl cursor-pointer ${
+              className={`relative transition-all duration-300 ease-out px-2 sm:px-3 py-1.5 sm:py-2.5 rounded-xl cursor-pointer ${
                 isHighlighted
                   ? 'bg-amber-500/8 border border-amber-500/20 scale-[1.02]'
                   : 'border border-transparent'
@@ -122,8 +122,8 @@ export default function LyricsViewer({ lyrics, songTitle, isPlaying, currentTime
               <p
                 className={`text-center leading-relaxed font-serif tracking-wide transition-all duration-300 ${
                   isHighlighted || isHovered
-                    ? 'text-amber-100 text-base font-bold drop-shadow-[0_0_12px_rgba(251,191,36,0.3)]'
-                    : 'text-slate-400 text-sm'
+                    ? 'text-amber-100 text-sm sm:text-base font-bold drop-shadow-[0_0_12px_rgba(251,191,36,0.3)]'
+                    : 'text-slate-400 text-xs sm:text-sm'
                 }`}
               >
                 {line.text}
