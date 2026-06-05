@@ -668,7 +668,7 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="relative flex-1 w-full flex items-center justify-center my-2 z-10 min-h-0">
+              <div className="relative flex-1 w-full flex items-center justify-center my-2 z-10" style={{ minHeight: showLyrics ? '300px' : '0px' }}>
                 {showLyrics && (activeSong.lyrics || apiLyrics) ? (
                   <div className="absolute inset-0 cursor-pointer" onClick={() => setShowLyrics(false)}>
                     <LyricsViewer lyrics={(activeSong.lyrics || apiLyrics)!} songTitle={activeSong.title} isPlaying={isPlaying} currentTime={currentTime} durationSeconds={parseDuration(activeSong.duration)} onSeek={(t) => { setCurrentTime(t); maydaySynth.seekTo(t); }} />

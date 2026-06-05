@@ -16,11 +16,12 @@ export default function LyricsViewer({ lyrics, songTitle, isPlaying, currentTime
   const [manualOverride, setManualOverride] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const manualTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
   const lines: LyricLine[] = useMemo(() => parseLRC(lyrics, durationSeconds), [lyrics, durationSeconds]);
   const activeIndex = useMemo(() => currentLyricIndex(lines, currentTime), [lines, currentTime]);
 
-  // Scroll to active line
+  // Scroll to active line — only when not manually overridden
   useEffect(() => {
     if (manualOverride || !scrollRef.current || activeIndex < 0) return;
     const el = scrollRef.current.querySelector(`[data-line-index="${activeIndex}"]`);
@@ -32,7 +33,8 @@ export default function LyricsViewer({ lyrics, songTitle, isPlaying, currentTime
   const handleUserScroll = () => {
     if (manualTimeoutRef.current) clearTimeout(manualTimeoutRef.current);
     setManualOverride(true);
-    manualTimeoutRef.current = setTimeout(() => setManualOverride(false), 4000);
+    // Much longer on mobile — user needs time to read
+    manualTimeoutRef.current = setTimeout(() => setManualOverride(false), isMobile ? 30000 : 8000);
   };
 
   const handleLineClick = (e: { stopPropagation: () => void }, line: LyricLine) => {
@@ -81,7 +83,7 @@ export default function LyricsViewer({ lyrics, songTitle, isPlaying, currentTime
       <div
         ref={scrollRef}
         onScroll={handleUserScroll}
-        className="relative z-20 flex-1 overflow-y-auto px-6 py-4 space-y-3 scrollbar-thin"
+        className="relative z-20 flex-1 overflow-y-auto px-3 sm:px-6 py-2 sm:py-4 space-y-1 sm:space-y-3 scrollbar-thin"
         style={{
           scrollbarWidth: 'thin',
           scrollbarColor: 'rgba(245, 158, 11, 0.15) transparent',
@@ -101,7 +103,7 @@ export default function LyricsViewer({ lyrics, songTitle, isPlaying, currentTime
               key={index}
               data-line-index={index}
               data-time={line.time}
-              className={`relative transition-all duration-300 ease-out px-3 py-2.5 rounded-xl cursor-pointer ${
+              className={`relative transition-all duration-300 ease-out px-2 sm:px-3 py-1 sm:py-2.5 rounded-xl cursor-pointer ${
                 isHighlighted
                   ? 'bg-amber-500/8 border border-amber-500/20 scale-[1.02]'
                   : 'border border-transparent'
