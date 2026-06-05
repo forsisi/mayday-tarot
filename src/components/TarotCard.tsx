@@ -78,7 +78,7 @@ export default function TarotCard({
   return (
     <div
       className={`relative cursor-pointer perspective-1000 group mx-auto select-none ${
-        large ? 'w-[220px] h-[360px] sm:w-[300px] sm:h-[500px] lg:w-[380px] lg:h-[640px]' : 'w-[220px] h-[340px] sm:w-[300px] sm:h-[460px] lg:w-[340px] lg:h-[520px]'
+        large ? 'w-[280px] h-[460px] sm:w-[340px] sm:h-[560px] lg:w-[380px] lg:h-[640px]' : 'w-[260px] h-[400px] sm:w-[340px] sm:h-[520px]'
       }`}
       onClick={onFlipToggle}
     >
@@ -132,7 +132,7 @@ export default function TarotCard({
             <div className={`absolute inset-0 rounded-xl bg-gradient-to-tr ${album.primaryColor} opacity-20 blur-xl scale-75 animate-pulse`} />
             
             {/* Album cover — full proportion, no square crop */}
-            <div className={`relative mx-auto flex-shrink-0 w-full ${large ? 'max-w-[180px] sm:max-w-[260px] lg:max-w-[340px]' : 'max-w-[180px] sm:max-w-[220px] lg:max-w-[240px]'}`}>
+            <div className={`relative mx-auto flex-shrink-0 ${large ? 'max-w-[340px]' : 'max-w-[240px]'} w-full`}>
               {!frontImageErr ? (
                 <div className="relative rounded-lg overflow-hidden shadow-lg">
                   <img
@@ -140,20 +140,20 @@ export default function TarotCard({
                     alt={album.title}
                     className="w-full h-auto object-contain block"
                     referrerPolicy="no-referrer"
-                    style={{ maxHeight: 'min(220px, 40vh)' }}
+                    style={{ maxHeight: large ? '400px' : '280px' }}
                   />
-                  </div>
-                ) : (
-                  <div className="w-full h-40 rounded-xl bg-slate-950 border-2 border-amber-400/40 shadow-lg flex items-center justify-center">
-                    <div className="absolute inset-2 rounded-full border border-dashed border-amber-200/30 animate-spin-slow" />
-                    <Disc className="w-16 h-16 text-white/95 animate-spin-very-slow z-10" />
-                  </div>
-                )}
+                </div>
+              ) : (
+                <div className="w-full h-40 rounded-xl bg-slate-950 border-2 border-amber-400/40 shadow-lg flex items-center justify-center">
+                  <div className="absolute inset-2 rounded-full border border-dashed border-amber-200/30 animate-spin-slow" />
+                  <Disc className="w-16 h-16 text-white/95 animate-spin-very-slow z-10" />
+                </div>
+              )}
             </div>
 
             {/* Title display */}
             <div className="mt-4 text-center px-4">
-              <h3 className={`text-base sm:text-lg lg:text-xl font-serif text-amber-100 tracking-wide font-black truncate ${large ? 'max-w-[200px] sm:max-w-[280px] lg:max-w-[360px]' : 'max-w-[180px] sm:max-w-[240px] lg:max-w-[260px]'}`}>
+              <h3 className={`text-xl font-serif text-amber-100 tracking-wide font-black truncate ${large ? 'max-w-[360px]' : 'max-w-[260px]'}`}>
                 {album.title}
               </h3>
               <p className="text-xs font-serif text-amber-400 font-semibold tracking-widest uppercase mt-1">

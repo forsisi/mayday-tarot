@@ -691,10 +691,10 @@ export default function App() {
                       setShowLyrics(true);
                     }}
                       style={{ animationPlayState: isPlaying ? 'running' : 'paused' }}
-                      className="absolute w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 rounded-full bg-slate-950 border-[6px] border-slate-900 shadow-xl overflow-hidden flex items-center justify-center cursor-pointer select-none z-20 animate-spin-slow hover:scale-105 transition duration-300"
+                      className="absolute w-44 h-44 rounded-full bg-slate-950 border-[6px] border-slate-900 shadow-xl overflow-hidden flex items-center justify-center cursor-pointer select-none z-20 animate-spin-slow hover:scale-105 transition duration-300"
                       title={activeSong.lyrics ? '点击查看歌词' : ''}>
-                      <div className={`w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full bg-gradient-to-tr ${selectedAlbum.primaryColor} p-1 flex flex-col items-center justify-center`}>
-                        <Disc className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 text-white animate-spin-very-slow mb-0.5" />
+                      <div className={`w-16 h-16 rounded-full bg-gradient-to-tr ${selectedAlbum.primaryColor} p-1 flex flex-col items-center justify-center`}>
+                        <Disc className="w-5 h-5 text-white animate-spin-very-slow mb-0.5" />
                         <span className="text-[7px] text-white/95 truncate w-12 font-serif font-black">{selectedAlbum.tarotCardName}</span>
                       </div>
                     </div>
