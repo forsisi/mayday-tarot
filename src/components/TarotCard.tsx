@@ -78,7 +78,7 @@ export default function TarotCard({
   return (
     <div
       className={`relative cursor-pointer perspective-1000 group mx-auto select-none ${
-        large ? 'w-[380px] h-[640px]' : 'w-[340px] h-[520px]'
+        large ? 'w-[280px] h-[460px] sm:w-[340px] sm:h-[560px] lg:w-[380px] lg:h-[640px]' : 'w-[260px] h-[400px] sm:w-[340px] sm:h-[520px]'
       }`}
       onClick={onFlipToggle}
     >

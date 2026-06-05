@@ -619,7 +619,7 @@ export default function App() {
 
         {/* === CARD DETAIL / PLAYER === */}
         {screen === 'CARD_DETAIL' && (
-          <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center h-full py-4" style={{ animation: 'player-enter 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}>
+          <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center py-4 overflow-y-auto" style={{ animation: 'player-enter 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards', maxHeight: 'calc(100vh - 60px)' }}>
             {/* LEFT: Card */}
             <div className="flex flex-col items-center shrink-0">
               <button onClick={returnToScrollBoard}
@@ -654,7 +654,7 @@ export default function App() {
             </div>
 
             {/* RIGHT: Player */}
-            <div className="flex-1 min-w-0 flex flex-col justify-between bg-slate-950/40 border border-slate-900 rounded-3xl p-6 relative overflow-hidden mt-12 ml-10" style={{ height: '680px', maxWidth: '520px' }}>
+            <div className="flex-1 min-w-0 flex flex-col justify-between bg-slate-950/40 border border-slate-900 rounded-3xl p-4 sm:p-6 relative overflow-hidden lg:mt-12 lg:ml-10 w-full" style={{ height: 'auto', minHeight: '480px', maxWidth: '520px' }}>
               <div className="absolute top-0 right-0 w-36 h-36 rounded-full bg-cyan-400/5 blur-3xl pointer-events-none" />
               <div className="absolute bottom-0 left-0 w-36 h-36 rounded-full bg-pink-400/5 blur-3xl pointer-events-none" />
 
