@@ -78,7 +78,7 @@ export default function TarotCard({
   return (
     <div
       className={`relative cursor-pointer perspective-1000 group mx-auto select-none ${
-        large ? 'w-[280px] h-[460px] sm:w-[340px] sm:h-[560px] lg:w-[380px] lg:h-[640px]' : 'w-[260px] h-[400px] sm:w-[340px] sm:h-[520px]'
+        large ? 'w-[240px] h-[380px] sm:w-[300px] sm:h-[500px] lg:w-[380px] lg:h-[640px]' : 'w-[220px] h-[340px] sm:w-[300px] sm:h-[460px] lg:w-[340px] lg:h-[520px]'
       }`}
       onClick={onFlipToggle}
     >
@@ -140,7 +140,7 @@ export default function TarotCard({
                     alt={album.title}
                     className="w-full h-auto object-contain block"
                     referrerPolicy="no-referrer"
-                    style={{ maxHeight: large ? '400px' : '280px' }}
+                    style={{ maxHeight: 'min(400px, 55vh)' }}
                   />
                 </div>
               ) : (

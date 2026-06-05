@@ -619,7 +619,7 @@ export default function App() {
 
         {/* === CARD DETAIL / PLAYER === */}
         {screen === 'CARD_DETAIL' && (
-          <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-6 items-center lg:items-start justify-center py-4 overflow-y-auto" style={{ animation: 'player-enter 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards', maxHeight: 'calc(100vh - 60px)' }}>
+          <div className="w-full max-w-6xl mx-auto flex flex-col lg:flex-row gap-4 lg:gap-6 items-center lg:items-start justify-center py-2 lg:py-4 overflow-y-auto lg:overflow-visible flex-1 lg:flex-none min-h-0" style={{ animation: 'player-enter 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards' }}>
             {/* LEFT: Card */}
             <div className="flex flex-col items-center shrink-0">
               <button onClick={returnToScrollBoard}
